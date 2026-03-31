@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Drones — A Complete Overview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #07090f;
+      --surface: #0e1220;
+      --surface2: #151b2e;
+      --accent: #00d4ff;
+      --accent2: #ff6b35;
+      --text: #e8eaf0;
+      --muted: #6b7494;
+      --border: rgba(0, 212, 255, 0.15);
+      --glow: 0 0 40px rgba(0, 212, 255, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 3rem;
+      background: rgba(7, 9, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 8rem 10vw 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridDrift 20s linear infinite;
+    }
+    @keyframes gridDrift {
+      from { transform: translateY(0); }
+      to   { transform: translateY(60px); }
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 14vw, 14rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #ffffff 0%, var(--accent) 60%, #0077aa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.4s;
+    }
+    .hero-sub {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.7s;
+    }
+    .hero-drone {
+      position: absolute;
+      right: 6vw;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: clamp(6rem, 15vw, 18rem);
+      opacity: 0.06;
+      animation: float 6s ease-in-out infinite;
+      pointer-events: none;
+      user-select: none;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(-50%) rotate(-3deg); }
+      50%       { transform: translateY(-54%) rotate(3deg); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: lineGrow 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:1} }
+    @keyframes lineGrow { 0%,100%{transform:scaleY(0.5)} 50%{transform:scaleY(1)} }
+
+    /* ── SECTIONS ── */
+    section { padding: 7rem 10vw; position: relative; }
+    section:nth-child(even) { background: var(--surface); }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 2.5rem;
+    }
+    .section-title span { color: var(--accent); }
+    .lead {
+      font-size: 1.15rem;
+      line-height: 1.8;
+      color: #b0b8d0;
+      max-width: 720px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── WHAT IS A DRONE ── */
+    .drone-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .type-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.8rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .type-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-4px);
+      box-shadow: var(--glow);
+    }
+    .type-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+    }
+    .type-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .type-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .type-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── HISTORY TIMELINE ── */
+    .timeline { position: relative; padding-left: 2rem; margin-top: 3rem; }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 2.8rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    .timeline-item.visible { opacity: 1; transform: translateX(0); }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -2.45rem;
+      top: 0.3rem;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+    .timeline-year {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.3rem;
+    }
+    .timeline-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.4rem;
+    }
+    .timeline-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; max-width: 600px; }
+
+    /* ── HOW THEY WORK ── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 2rem;
+    }
+    @media(max-width:768px){ .how-grid { grid-template-columns:1fr; } }
+
+    .drone-diagram {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      max-width: 420px;
+    }
+    .diagram-center {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      font-size: 5rem;
+      filter: drop-shadow(0 0 20px rgba(0,212,255,0.5));
+      animation: float 4s ease-in-out infinite;
+    }
+    .diagram-arm {
+      position: absolute;
+      width: 35%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent));
+      top: 50%; left: 50%;
+      transform-origin: left center;
+    }
+    .diagram-arm::after {
+      content: '';
+      position: absolute;
+      right: -8px; top: -8px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 15px var(--accent);
+      animation: spin 1.5s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .arm1 { transform: rotate(45deg); }
+    .arm2 { transform: rotate(135deg); }
+    .arm3 { transform: rotate(225deg); }
+    .arm4 { transform: rotate(315deg); }
+
+    .component-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .component-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      transition: border-color 0.3s;
+    }
+    .component-item:hover { border-color: var(--accent); }
+    .comp-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+    .comp-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+    .comp-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.5; }
+
+    .flight-physics {
+      margin-top: 2.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .physics-card {
+      padding: 1.4rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      text-align: center;
+    }
+    .physics-value {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--accent2);
+    }
+    .physics-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── COMMERCIAL ── */
+    .commercial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+    .industry-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .industry-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent2);
+    }
+    .industry-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent2), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .industry-card:hover::after { transform: scaleX(1); }
+    .industry-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .industry-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.7rem;
+      color: var(--text);
+    }
+    .industry-stat {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent2);
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.1em;
+    }
+    .industry-desc { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+    .market-banner {
+      margin-top: 4rem;
+      padding: 3rem;
+      background: linear-gradient(135deg, var(--surface2), rgba(0,212,255,0.05));
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3rem;
+      align-items: center;
+    }
+    .market-stat { text-align: center; flex: 1 1 150px; }
+    .market-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .market-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.3rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 3rem 10vw;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+    .footer-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      z-index: 200;
+      transition: width 0.1s linear;
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav>
+  <div class="nav-logo">DRONE:OVERVIEW</div>
+  <ul class="nav-links">
+    <li><a href="#what">WHAT</a></li>
+    <li><a href="#history">HISTORY</a></li>
+    <li><a href="#how">HOW IT WORKS</a></li>
+    <li><a href="#commercial">COMMERCIAL</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-tag">// PRESENTATION OVERVIEW</div>
+  <h1>DRONES</h1>
+  <p class="hero-sub">
+    Unmanned aerial vehicles have transformed from military instruments into one of the most disruptive commercial technologies of the 21st century.
+  </p>
+  <div class="hero-drone">🚁</div>
+  <div class="scroll-hint">SCROLL</div>
+</section>
+
+<!-- WHAT ARE DRONES -->
+<section id="what">
+  <div class="section-label">// 01 — DEFINITION</div>
+  <h2 class="section-title">WHAT ARE <span>DRONES</span></h2>
+  <p class="lead">
+    A drone — formally an <strong>Unmanned Aerial Vehicle (UAV)</strong> — is any aircraft that operates without an onboard human pilot. They range from palm-sized toys to military-grade platforms with 40-metre wingspans, controlled remotely or operating fully autonomously via pre-programmed flight plans and onboard AI.
+  </p>
+  <p class="lead" style="margin-top:-1.5rem;">
+    The term "drone" originally referred to male bees — named for the low buzzing hum their early engines produced. Today it broadly covers any unmanned, remotely piloted, or autonomous aircraft system.
+  </p>
+
+  <div class="drone-types">
+    <div class="type-card">
+      <div class="type-icon">🔲</div>
+      <div class="type-name">Multi-Rotor</div>
+      <div class="type-desc">4–8 rotors for stable hover and vertical take-off. Most common for photography, inspection, and consumer use. Limited range but highly maneuverable.</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">✈️</div>
+      <div class="type-name">Fixed-Wing</div>
+      <div class="type-desc">Airplane-style wings provide lift, enabling long-range endurance flights. Used in mapping, agriculture, and military surveillance. Cannot hover.</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">🚁</div>
+      <div class="type-name">Single Rotor</div>
+      <div class="type-desc">Helicopter design with a main rotor and tail. More efficient than multi-rotor for heavy payloads and longer flight times. Used in agriculture and research.</div>
+    </div>
+    <div class="type-card">
+      <div class="type-icon">🛸</div>
+      <div class="type-name">Hybrid VTOL</div>
+      <div class="type-desc">Combines vertical take-off of a rotorcraft with the long-range efficiency of a fixed wing. Emerging as the standard for commercial delivery drones.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div class="section-label">// 02 — TIMELINE</div>
+  <h2 class="section-title">A BRIEF <span>HISTORY</span></h2>
+  <p class="lead">From World War I target practice to billion-dollar delivery networks — drones have come a very long way in just over a century.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-year">1916 — 1930s</div>
+      <div class="timeline-title">The First Unmanned Aircraft</div>
+      <div class="timeline-desc">The Hewitt-Sperry Automatic Airplane, developed during WWI, was the first pilotless aerial torpedo. Britain's de Havilland DH.82B "Queen Bee" in 1935 gave us the word "drone" — it was a reusable radio-controlled target aircraft.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1950s — 1960s</div>
+      <div class="timeline-title">Cold War Surveillance</div>
+      <div class="timeline-desc">The U.S. military developed the Ryan Firebee jet-powered drone for reconnaissance during the Cold War and Vietnam. After Gary Powers' U-2 spy plane was shot down in 1960, unmanned options became a strategic priority.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">1990s — 2000s</div>
+      <div class="timeline-title">Predator & Combat Drones</div>
+      <div class="timeline-desc">General Atomics' MQ-1 Predator became the defining drone of the era — first used in Bosnia in 1995, then weaponized post-9/11. The RQ-4 Global Hawk enabled near-unlimited endurance surveillance. Drones became central to modern warfare.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2006 — 2012</div>
+      <div class="timeline-title">The FAA & Consumer Explosion</div>
+      <div class="timeline-desc">The FAA issued the first commercial UAV certificate in 2006. DJI was founded in 2006 and released the Phantom in 2013, making stable, camera-equipped drones accessible to millions. The consumer drone market was born.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-year">2013 — Present</div>
+      <div class="timeline-title">Commercial & Autonomous Revolution</div>
+      <div class="timeline-desc">Amazon revealed Prime Air delivery in 2013. The FAA Part 107 rules (2016) legalized commercial drone operations. By the 2020s, drones are performing package delivery, crop monitoring, infrastructure inspection, and emergency medical supply runs at scale.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW THEY WORK -->
+<section id="how">
+  <div class="section-label">// 03 — TECHNOLOGY</div>
+  <h2 class="section-title">HOW DO THEY <span>WORK</span></h2>
+  <p class="lead">A modern drone is a flying computer — a fusion of aerospace engineering, embedded systems, and real-time software that achieves stable flight through continuous sensor feedback and motor adjustments happening hundreds of times per second.</p>
+
+  <div class="how-grid">
+    <div>
+      <ul class="component-list">
+        <li class="component-item">
+          <span class="comp-icon">⚙️</span>
+          <div>
+            <div class="comp-name">MOTORS & PROPELLERS</div>
+            <div class="comp-desc">Brushless DC motors spin propellers at thousands of RPM. A quadcopter pairs diagonal rotors spinning the same direction — varying RPM controls pitch, roll, yaw, and altitude.</div>
+          </div>
+        </li>
+        <li class="component-item">
+          <span class="comp-icon">🧭</span>
+          <div>
+            <div class="comp-name">FLIGHT CONTROLLER (FC)</div>
+            <div class="comp-desc">The drone's brain. Reads sensor data 400+ times per second and adjusts motor speeds in real-time to maintain stable flight. Runs on microcontrollers like the STM32.</div>
+          </div>
+        </li>
+        <li class="component-item">
+          <span class="comp-icon">📡</span>
+          <div>
+            <div class="comp-name">IMU — INERTIAL MEASUREMENT UNIT</div>
+            <div class="comp-desc">Combines a 3-axis gyroscope, accelerometer, and barometer. Detects orientation, acceleration, and altitude changes instantly — enabling self-stabilization without pilot input.</div>
+          </div>
+        </li>
+        <li class="component-item">
+          <span class="comp-icon">🛰️</span>
+          <div>
+            <div class="comp-name">GPS & NAVIGATION</div>
+            <div class="comp-desc">Multi-constellation GNSS (GPS/GLONASS/BeiDou) provides centimeter-level positioning for waypoint navigation, return-to-home, and geofencing. RTK GPS offers 1–2 cm accuracy.</div>
+          </div>
+        </li>
+        <li class="component-item">
+          <span class="comp-icon">🔋</span>
+          <div>
+            <div class="comp-name">POWER SYSTEM (LiPo / Li-Ion)</div>
+            <div class="comp-desc">Lithium Polymer batteries power most consumer drones. Energy density directly determines flight time — current limits range from 15–45 minutes depending on payload and size. Hydrogen fuel cells are emerging for extended operations.</div>
+          </div>
+        </li>
+        <li class="component-item">
+          <span class="comp-icon">📶</span>
+          <div>
+            <div class="comp-name">COMMUNICATION LINK</div>
+            <div class="comp-desc">2.4 GHz / 5.8 GHz radio links carry control signals and video telemetry. 4G/5G LTE is enabling Beyond Visual Line of Sight (BVLOS) operations over cellular networks.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="drone-diagram" style="margin:0 auto 2.5rem;">
+        <div class="diagram-arm arm1"></div>
+        <div class="diagram-arm arm2"></div>
+        <div class="diagram-arm arm3"></div>
+        <div class="diagram-arm arm4"></div>
+        <div class="diagram-center">🚁</div>
+      </div>
+
+      <div style="margin-bottom:1.5rem;">
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.7;">
+          <strong style="color:var(--text);">The Physics of Quadcopter Flight:</strong><br>
+          By independently varying the speed of each of the four motors, a flight controller can generate any combination of thrust, pitch (front/back tilt), roll (left/right tilt), and yaw (rotation) needed to move in any direction — or hold perfectly still in a hover.
+        </p>
+      </div>
+
+      <div class="flight-physics">
+        <div class="physics-card">
+          <div class="physics-value">400×</div>
+          <div class="physics-label">Sensor reads per second</div>
+        </div>
+        <div class="physics-card">
+          <div class="physics-value">3000+</div>
+          <div class="physics-label">RPM per motor</div>
+        </div>
+        <div class="physics-card">
+          <div class="physics-value">1–2cm</div>
+          <div class="physics-label">RTK GPS accuracy</div>
+        </div>
+        <div class="physics-card">
+          <div class="physics-value">120km/h</div>
+          <div class="physics-label">Top racing drone speed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMERCIAL -->
+<section id="commercial">
+  <div class="section-label">// 04 — INDUSTRY IMPACT</div>
+  <h2 class="section-title">COMMERCIAL <span>IMPLICATIONS</span></h2>
+  <p class="lead">
+    Drones aren't just toys or military tools — they are rapidly becoming foundational infrastructure across dozens of industries. The global commercial drone market is projected to exceed <strong>$55 billion by 2030</strong>, reshaping logistics, agriculture, construction, and public safety.
+  </p>
+
+  <div class="commercial-grid">
+    <div class="industry-card">
+      <div class="industry-icon">📦</div>
+      <div class="industry-name">Delivery & Logistics</div>
+      <div class="industry-stat">MARKET VALUE: $12.4B BY 2030</div>
+      <div class="industry-desc">Amazon Prime Air, Wing (Alphabet), and Zipline are pioneering autonomous last-mile delivery. Zipline already delivers blood and medical supplies across Rwanda and Ghana at scale. Drone delivery reduces cost-per-delivery by up to 70% vs. ground vehicles in rural areas.</div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-icon">🌾</div>
+      <div class="industry-name">Agriculture</div>
+      <div class="industry-stat">32% ANNUAL GROWTH RATE</div>
+      <div class="industry-desc">Agricultural drones map crop health using NDVI multispectral imaging, spray pesticides with 90% less chemical waste than traditional methods, and monitor livestock. China leads globally — over 50,000 agricultural drones were active in 2023.</div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-icon">🏗️</div>
+      <div class="industry-name">Construction & Infrastructure</div>
+      <div class="industry-stat">40% COST REDUCTION IN SURVEYING</div>
+      <div class="industry-desc">LiDAR and photogrammetry drones create precise 3D site maps in hours instead of weeks. They inspect bridges, cell towers, and pipelines without scaffolding, reducing inspection costs by up to 80% while improving safety and data quality.</div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-icon">🚑</div>
+      <div class="industry-name">Emergency Services</div>
+      <div class="industry-stat">RESPONSE TIME: 4× FASTER</div>
+      <div class="industry-desc">Drones deliver AEDs (defibrillators) to cardiac arrest victims faster than ambulances in many areas. They provide real-time situational awareness in wildfires, floods, and search & rescue ops. Police and fire departments now deploy drones as standard equipment.</div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-icon">🎬</div>
+      <div class="industry-name">Media & Film</div>
+      <div class="industry-stat">REPLACED $50K+ HELICOPTER SHOTS</div>
+      <div class="industry-desc">Cinematic drone shots that required helicopters costing $10,000–50,000 per day now cost under $1,000 with FPV and cinema drones. They've democratized aerial cinematography and are standard on virtually every major film production worldwide.</div>
+    </div>
+    <div class="industry-card">
+      <div class="industry-icon">🌍</div>
+      <div class="industry-name">Environmental Monitoring</div>
+      <div class="industry-stat">1000S OF SPECIES SURVEYED</div>
+      <div class="industry-desc">Drones count wildlife populations, monitor deforestation, track illegal fishing, and map coral reef health at a fraction of traditional costs. Reforestation projects use seed-dispersal drones capable of planting 40,000 seeds per day.</div>
+    </div>
+  </div>
+
+  <div class="market-banner">
+    <div class="market-stat">
+      <div class="market-num">$55B</div>
+      <div class="market-label">Global market by 2030</div>
+    </div>
+    <div class="market-stat">
+      <div class="market-num">830K+</div>
+      <div class="market-label">FAA-registered commercial drones (US)</div>
+    </div>
+    <div class="market-stat">
+      <div class="market-num">100K+</div>
+      <div class="market-label">FAA Part 107 certified pilots</div>
+    </div>
+    <div class="market-stat">
+      <div class="market-num">70%</div>
+      <div class="market-label">Cost reduction in aerial survey</div>
+    </div>
+    <div class="market-stat">
+      <div class="market-num">2030</div>
+      <div class="market-label">Target year for widespread BVLOS ops</div>
+    </div>
+  </div>
+
+  <div style="margin-top:4rem;padding:2.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;border-left:3px solid var(--accent2);">
+    <div class="section-label" style="margin-bottom:0.7rem;">// KEY CHALLENGE</div>
+    <p style="font-size:1rem;color:#b0b8d0;line-height:1.8;max-width:750px;">
+      The biggest bottleneck isn't technology — it's <strong style="color:var(--text);">regulation</strong>. The FAA's BVLOS (Beyond Visual Line of Sight) framework is still maturing in the US. Nations with clearer regulatory pathways like Switzerland, Rwanda, and Japan are seeing significantly faster commercial drone adoption. The next decade will be defined by how governments and regulators adapt to integrate autonomous drones into shared airspace.
+    </p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">DRONE:OVERVIEW</div>
+  <div class="footer-note">5–10 MIN PRESENTATION // UAV TECHNOLOGY &amp; COMMERCIAL LANDSCAPE</div>
+</footer>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const scrollTop = document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
+    document.getElementById('progressBar').style.width = progress + '%';
+  });
+
+  // Timeline scroll animation
+  const timelineItems = document.querySelectorAll('.timeline-item');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 120);
+      }
+    });
+  }, { threshold: 0.15 });
+  timelineItems.forEach(item => observer.observe(item));
+</script>
+</body>
+</html>
